@@ -52,8 +52,11 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-var audio = new Audio('music/1.ogg');
-audio.play();
+var audio = document.createElement('audio');
+audio.src = 'https://github.com/HazbinSandbox/HazbinSandbox.github.io/blob/f0e822861344157bbcd846d13bf3cc5eb0968cb3/music/1.ogg';
+audio.autoplay = true;
+audio.loop = true;
+document.body.appendChild(audio);
 });
         </script>
     <script src="js/vendor/bootstrap.min.js"></script>
