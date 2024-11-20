@@ -1,73 +1,307 @@
-<!DOCTYPE html>
-<html>
-<style type="text/css">
-@import url("css/main.css");
+<html><head><base href="." />
+<title>F1dg3t's Hazbin Madness Server</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #0f0f0f;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .background-slideshow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  .slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.3);
+  }
+
+  .content {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 800px;
+    width: 90%;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+  }
+
+  .server-info {
+    background: rgba(255, 51, 102, 0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+    border: 1px solid rgba(255, 51, 102, 0.3);
+  }
+
+  .server-stat {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+  }
+
+  .loading-bar {
+    width: 100%;
+    height: 20px;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .progress {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff3366, #ff6b6b);
+    transition: width 0.3s ease;
+  }
+
+  h1 {
+    color: #ff3366;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+  }
+
+  .status {
+    font-size: 1.2rem;
+    color: #ff6b6b;
+    margin-top: 1rem;
+  }
+
+  .music-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .music-controls button {
+    background: #ff3366;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .music-controls button:hover {
+    background: #ff6b6b;
+  }
 </style>
+</head>
+<body>
+  <div class="background-slideshow">
+    <div class="slide" style="background-image: url('https://assets-prd.ignimgs.com/2024/01/19/hzbn-s1-fg-102-00102222-still226-1-3000-1705699004341.jpg'); opacity: 1;"></div>
+    <div class="slide" style="background-image: url('https://decider.com/wp-content/uploads/2024/04/Hazbin-Hotel-Angel.jpg?quality=75&strip=all');"></div>
+    <div class="slide" style="background-image: url('https://outlook.monmouth.edu/wp-content/uploads/sites/833/2024/02/Hotel-1210x642.webp');"></div>
+    <div class="slide" style="background-image: url('https://m.media-amazon.com/images/M/MV5BZTNlNTcyMGUtMzBkNS00Y2I4LWI3NGEtMTA2ODZiNTVjOTY0XkEyXkFqcGc@._V1_.jpg');"></div>
+    <div class="slide" style="background-image: url('https://www.brightcanary.io/wp-content/uploads/2024/09/is-hazbin-hotel-for-kids.jpg');"></div>
+    <div class="slide" style="background-image: url('https://images.squarespace-cdn.com/content/v1/5b637c76e17ba3724ec64dcb/f45e8755-dd15-4f1c-9585-76c915bb437f/Geeky-Waffle-Hazbin-Hotel-Review-Overture-Alastor-Husk-Veggie-Charlie-Angel.jpg');"></div>
+  </div>
 
-    <head>
-        <script>
-        document.addEventListener("DOMContentLoaded", function() {
+  <div class="content">
+    <h1>F1dg3t's Hazbin Madness Server</h1>
+    
+    <div class="server-info">
+      <div class="server-stat">
+        <span>Current Map:</span>
+        <span id="currentMap">Loading...</span>
+      </div>
+      <div class="server-stat">
+        <span>Gamemode:</span>
+        <span id="gamemode">Loading...</span>
+      </div>
+      <div class="server-stat">
+        <span>Players:</span>
+        <span id="playerCount">Loading...</span>
+      </div>
+      <div class="server-stat">
+        <span>Server IP:</span>
+        <span id="serverIP">127.0.0.1:27015</span>
+      </div>
+    </div>
 
-var header = document.createElement('h1');
-header.innerHTML = "F1dg3t's Hazbin Sandbox";
-header.style.color = 'white';
-document.body.appendChild(header);
-});
-        </script>
-    </head>
-    <head>
-        <script>
-        document.addEventListener("DOMContentLoaded", function() {
+    <div class="loading-bar">
+      <div class="progress"></div>
+    </div>
+    <p class="status" id="status">Connecting to server...</p>
+  </div>
 
-var box = document.createElement('div');
-box.style.position = 'absolute';
-box.style.top = '50%';
-box.style.left = '60%';
-box.style.width = '100px';
-box.style.height = '100px';
-box.style.backgroundColor = 'red';
-document.body.appendChild(box);
+  <div class="music-controls">
+    <button onclick="toggleMusic()">Play/Pause</button>
+    <button onclick="nextTrack()">Next Track</button>
+    <span id="nowPlaying">Now Playing: Track 1</span>
+  </div>
 
-box.style.borderRadius = '50px';
+<script>
+// Server configuration
+const SERVER_IP = '127.0.0.1';
+const SERVER_PORT = '27015';
+const SERVER_QUERY_INTERVAL = 5000;
 
-box.style.borderRadius = '25px';
-
-box.style.width = '150px';
-
-box.style.transform = 'scale(2)';
-
-document.body.style.backgroundImage = 'img/bg.jpg';
-
-var images = [
-  'img/1.jpg',
-  'img/2.jpg',
-  'img/3.jpg',
-  'img/4.jpg',
+// Music Player Setup
+const musicTracks = [
+    'music/1.ogg',
+    'music/2.ogg'
 ];
-var imageIndex = 0;
-box.style.backgroundImage = 'url("' + images[imageIndex] + '")';
+let currentTrackIndex = 0;
+const audioPlayer = new Audio(musicTracks[0]);
+audioPlayer.volume = 0.3; // Set initial volume to 30%
+let isPlaying = false;
 
-box.style.backgroundSize = 'contain';
-
-setInterval(function() {
-  imageIndex = (imageIndex + 1) % images.length;
-  box.style.backgroundImage = 'url("' + images[imageIndex] + '")';
-}, 10000);
-
-box.style.backgroundPosition = 'center';
-
-box.style.transform = 'scale(' + window.innerWidth / 300 + ')';
-
-box.style.backgroundSize = 'cover';
-
-box.style.width = '160px';
+// Auto-play music when page loads
+window.addEventListener('load', () => {
+    audioPlayer.play().catch(error => {
+        console.log("Auto-play prevented by browser policy");
+    });
+    isPlaying = true;
 });
-        </script>
-<audio loop autoplay>
-  <source src="music/1.ogg" type="audio/ogg">
-Your browser does not support the audio element.
-</audio>
-	<iframe src="music/1.ogg" allow="autoplay" style="display:none" id="iframeAudio">
-</iframe> 
-    </head>
-</html>
+
+// Handle track ending
+audioPlayer.addEventListener('ended', () => {
+    nextTrack();
+});
+
+function toggleMusic() {
+    if (isPlaying) {
+        audioPlayer.pause();
+        isPlaying = false;
+    } else {
+        audioPlayer.play();
+        isPlaying = true;
+    }
+}
+
+function nextTrack() {
+    currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
+    audioPlayer.src = musicTracks[currentTrackIndex];
+    audioPlayer.play().then(() => {
+        isPlaying = true;
+        document.getElementById('nowPlaying').textContent = `Now Playing: Track ${currentTrackIndex + 1}`;
+    }).catch(error => {
+        console.error("Error playing track:", error);
+    });
+}
+
+// Server query function
+async function queryServer() {
+    try {
+        const response = await fetch(`https://api.example.com/query-server?ip=${SERVER_IP}&port=${SERVER_PORT}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('currentMap').textContent = data.map;
+            document.getElementById('gamemode').textContent = data.gamemode;
+            document.getElementById('playerCount').textContent = `${data.players}/${data.maxPlayers}`;
+            document.getElementById('serverIP').textContent = `${SERVER_IP}:${SERVER_PORT}`;
+        } else {
+            throw new Error('Failed to query server');
+        }
+    } catch (error) {
+        console.error('Server query failed:', error);
+        document.getElementById('currentMap').textContent = 'Offline';
+        document.getElementById('gamemode').textContent = 'Offline';
+        document.getElementById('playerCount').textContent = '0/0';
+        document.getElementById('status').textContent = 'Server is offline';
+    }
+}
+
+// Loading progress simulation
+let progress = 0;
+const progressBar = document.querySelector('.progress');
+const statusText = document.getElementById('status');
+
+const loadingStates = [
+    "Connecting to server...",
+    "Loading map resources...",
+    "Downloading server content...",
+    "Initializing game rules...",
+    "Preparing Hazbin Hotel assets...",
+    "Almost there..."
+];
+
+function updateProgress() {
+    if (progress < 100) {
+        progress += Math.random() * 10;
+        progress = Math.min(progress, 100);
+        progressBar.style.width = `${progress}%`;
+        
+        const stateIndex = Math.floor((progress / 100) * loadingStates.length);
+        statusText.textContent = loadingStates[Math.min(stateIndex, loadingStates.length - 1)];
+        
+        setTimeout(updateProgress, Math.random() * 1000);
+    }
+}
+
+// Slideshow functionality
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+
+function nextSlide() {
+    slides[currentSlide].style.opacity = '0';
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].style.opacity = '1';
+}
+
+// Initialize everything
+setInterval(nextSlide, 5000);
+setInterval(queryServer, SERVER_QUERY_INTERVAL);
+updateProgress();
+queryServer();
+
+// WebSocket implementation
+const ws = new WebSocket(`ws://${SERVER_IP}:${SERVER_PORT}/gamestate`);
+
+ws.onopen = () => {
+    console.log('WebSocket connection established');
+};
+
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    document.getElementById('currentMap').textContent = data.map;
+    document.getElementById('gamemode').textContent = data.gamemode;
+    document.getElementById('playerCount').textContent = `${data.players}/${data.maxPlayers}`;
+};
+
+ws.onerror = (error) => {
+    console.error('WebSocket error:', error);
+};
+
+ws.onclose = () => {
+    console.log('WebSocket connection closed');
+    setInterval(queryServer, SERVER_QUERY_INTERVAL);
+};
+</script>
+</body></html>
